@@ -4,6 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import "./Tabs.css";
+import List from "./List";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -58,7 +59,7 @@ export default function BasicTabs() {
       isChecked: false,
     },
     {
-      id: 3,
+      id: 4,
 
       title: "Become a good person",
       status: "Completed",
@@ -73,9 +74,10 @@ export default function BasicTabs() {
     setAllList([
       ...allList,
       {
-        id: allList.length,
+        id: allList.length + 1,
         title: keyword,
         status: "Active",
+        isChecked: false,
       },
     ]);
   };
@@ -90,6 +92,25 @@ export default function BasicTabs() {
     console.log(newList);
     setAllList(newList);
   };
+  const deleteItem = (title) => {
+    const newList = allList.filter((todo) => todo.title !== title);
+    setAllList(newList);
+  };
+  const deleteAll = (title) => {
+    const newList = [];
+    setAllList(newList);
+  };
+  const checkBox = (e, title) => {
+    const newList = allList.map((todo) => {
+      console.log(todo.title, title);
+      if (todo.title === title) {
+        todo.isChecked = e.target.checked;
+      }
+      return todo;
+    });
+    console.log(newList);
+    setAllList(newList);
+  };
   return (
     <Box sx={{ width: "100%" }}>
       <div className="text-center todo-head">#Todo</div>
@@ -98,32 +119,14 @@ export default function BasicTabs() {
         <Tabs
           value={value}
           onChange={handleChange}
+          onClick={() => {
+            resetIsChecked();
+          }}
           aria-label="basic tabs example"
         >
-          <Tab
-            onClick={() => {
-              resetIsChecked();
-            }}
-            style={{ width: "33%" }}
-            label="All"
-            {...a11yProps(0)}
-          />
-          <Tab
-            onClick={() => {
-              resetIsChecked();
-            }}
-            style={{ width: "33%" }}
-            label="Active"
-            {...a11yProps(1)}
-          />
-          <Tab
-            onClick={() => {
-              resetIsChecked();
-            }}
-            style={{ width: "33%" }}
-            label="Completed"
-            {...a11yProps(2)}
-          />
+          <Tab style={{ width: "33%" }} label="All" {...a11yProps(0)} />
+          <Tab style={{ width: "33%" }} label="Active" {...a11yProps(1)} />
+          <Tab style={{ width: "33%" }} label="Completed" {...a11yProps(2)} />
         </Tabs>
       </Box>
 
@@ -141,42 +144,16 @@ export default function BasicTabs() {
           </button>
         </div>
         <div className=" ">
-          {allList.map((todo, id) => {
-            return (
-              <div className="flex">
-                <input
-                  onChange={(e) => {
-                    const newList = allList.map((todo) => {
-                      if (todo.id === id + 1) {
-                        todo.isChecked = e.target.checked;
-                      }
-                      return todo;
-                    });
-                    setAllList(newList);
-                  }}
-                  type="checkbox"
-                />
-                <p
-                  className="ml-5"
-                  style={
-                    todo.isChecked ? { textDecoration: "line-through" } : null
-                  }
-                >
-                  {todo?.title}
-                </p>
-              </div>
-            );
-          })}
+          <List
+            deleteItem={deleteItem}
+            checkBox={checkBox}
+            allList={allList}
+            status={"All"}
+          />
         </div>
       </CustomTabPanel>
 
-      <CustomTabPanel
-        value={value}
-        index={1}
-        onClick={() => {
-          resetIsChecked();
-        }}
-      >
+      <CustomTabPanel value={value} index={1}>
         <div>
           <input
             className="add-details-input"
@@ -189,95 +166,44 @@ export default function BasicTabs() {
             Add
           </button>
         </div>
-        {allList.map((todo, id) => {
-          if (todo.status === "Active") {
-            return (
-              <div className="flex">
-                <input
-                  onChange={(e) => {
-                    const newList = allList.map((todo) => {
-                      if (todo.id === id + 1) {
-                        todo.isChecked = e.target.checked;
-                      }
-                      return todo;
-                    });
-                    setAllList(newList);
-                  }}
-                  type="checkbox"
-                />
-                <p
-                  className="ml-5"
-                  style={
-                    todo.isChecked ? { textDecoration: "line-through" } : null
-                  }
-                >
-                  {todo?.title}
-                </p>
-              </div>
-            );
-          }
-        })}
+        <List
+          deleteItem={deleteItem}
+          checkBox={checkBox}
+          allList={allList}
+          status={"Active"}
+        />
+
         <button
+          className="complete-task"
           onClick={() => {
             const newList = allList.map((todo, index) => {
-              if (todo.id === index + 1 && todo.status === "Active") {
+              console.log(todo.id, index);
+              if (todo.isChecked) {
                 todo.status = "Completed";
               }
               return todo;
             });
+            console.log(newList);
             setAllList(newList);
           }}
         >
           Complete Task
         </button>
       </CustomTabPanel>
-      <CustomTabPanel
-        value={value}
-        index={2}
-        onClick={() => {
-          resetIsChecked();
-        }}
-      >
-        {allList.map((todo, index) => {
-          if (todo.status === "Completed") {
-            return (
-              <div className="flex">
-                <input
-                  onChange={(e) => {
-                    const newList = allList.map((todo) => {
-                      if (todo.id === index + 1) {
-                        todo.isChecked = e.target.checked;
-                      }
-                      return todo;
-                    });
-                    setAllList(newList);
-                  }}
-                  type="checkbox"
-                />
-                <p
-                  className="ml-5"
-                  style={
-                    todo.isChecked ? { textDecoration: "line-through" } : null
-                  }
-                >
-                  {todo?.title}
-                </p>
-              </div>
-            );
-          }
-        })}
+      <CustomTabPanel value={value} index={2}>
+        <List
+          deleteItem={deleteItem}
+          checkBox={checkBox}
+          allList={allList}
+          status={"Completed"}
+        />
+
         <button
           className="delete-all"
           onClick={() => {
-            let newList = [];
-            for (let i = 0; i < allList.length; i++) {
-              if (allList[i].isChecked && allList[i].status === "Completed") {
-              } else {
-                newList.push(allList[i]);
-              }
-            }
-            setAllList(newList);
+            deleteAll();
           }}
+          
         >
           Delete All
         </button>

@@ -65,4 +65,25 @@ body {font-family: Arial;}
     background-color: red;
     color: white;
     margin-left: 85%;
+
+}
+
+.complete-task{
+    background-color: rgb(83, 83, 156);
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    color: white;
+    border-radius: 8px;
+    margin-left: 87.5%;
+}
+
+.trash-can {
+    width: 24px;
+    height: 24px;
+    margin-left: 78%;
+}
+
+.delete-all{
 }
