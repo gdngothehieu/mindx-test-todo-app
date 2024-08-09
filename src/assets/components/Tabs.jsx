@@ -57,6 +57,13 @@ export default function BasicTabs() {
       status: "Completed",
       isChecked: false,
     },
+    {
+      id: 3,
+
+      title: "Become a good person",
+      status: "Completed",
+      isChecked: false,
+    },
   ]);
   const [keyword, setKeyword] = React.useState("");
   const addTask = () => {
@@ -75,7 +82,14 @@ export default function BasicTabs() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  const resetIsChecked = () => {
+    const newList = allList.map((todo) => {
+      todo.isChecked = false;
+      return todo;
+    });
+    console.log(newList);
+    setAllList(newList);
+  };
   return (
     <Box sx={{ width: "100%" }}>
       <div className="text-center todo-head">#Todo</div>
@@ -86,11 +100,33 @@ export default function BasicTabs() {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab style={{ width: "33%" }} label="All" {...a11yProps(0)} />
-          <Tab style={{ width: "33%" }} label="Active" {...a11yProps(1)} />
-          <Tab style={{ width: "33%" }} label="Completed" {...a11yProps(2)} />
+          <Tab
+            onClick={() => {
+              resetIsChecked();
+            }}
+            style={{ width: "33%" }}
+            label="All"
+            {...a11yProps(0)}
+          />
+          <Tab
+            onClick={() => {
+              resetIsChecked();
+            }}
+            style={{ width: "33%" }}
+            label="Active"
+            {...a11yProps(1)}
+          />
+          <Tab
+            onClick={() => {
+              resetIsChecked();
+            }}
+            style={{ width: "33%" }}
+            label="Completed"
+            {...a11yProps(2)}
+          />
         </Tabs>
       </Box>
+
       <CustomTabPanel value={value} index={0}>
         <div className="flex ">
           <input
@@ -105,22 +141,42 @@ export default function BasicTabs() {
           </button>
         </div>
         <div className=" ">
-          {allList.map((todo) => {
+          {allList.map((todo, id) => {
             return (
               <div className="flex">
                 <input
                   onChange={(e) => {
-                    setKeyword(e.target.value);
+                    const newList = allList.map((todo) => {
+                      if (todo.id === id + 1) {
+                        todo.isChecked = e.target.checked;
+                      }
+                      return todo;
+                    });
+                    setAllList(newList);
                   }}
                   type="checkbox"
                 />
-                <p className="ml-5">{todo?.title}</p>
+                <p
+                  className="ml-5"
+                  style={
+                    todo.isChecked ? { textDecoration: "line-through" } : null
+                  }
+                >
+                  {todo?.title}
+                </p>
               </div>
             );
           })}
         </div>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+
+      <CustomTabPanel
+        value={value}
+        index={1}
+        onClick={() => {
+          resetIsChecked();
+        }}
+      >
         <div>
           <input
             className="add-details-input"
@@ -139,19 +195,24 @@ export default function BasicTabs() {
               <div className="flex">
                 <input
                   onChange={(e) => {
-                    console.log(e.target.checked);
                     const newList = allList.map((todo) => {
                       if (todo.id === id + 1) {
                         todo.isChecked = e.target.checked;
                       }
                       return todo;
                     });
-                    console.log(newList);
                     setAllList(newList);
                   }}
                   type="checkbox"
                 />
-                <p>{todo?.title}</p>
+                <p
+                  className="ml-5"
+                  style={
+                    todo.isChecked ? { textDecoration: "line-through" } : null
+                  }
+                >
+                  {todo?.title}
+                </p>
               </div>
             );
           }
@@ -164,32 +225,57 @@ export default function BasicTabs() {
               }
               return todo;
             });
-            console.log(newList);
             setAllList(newList);
           }}
         >
           Complete Task
         </button>
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
+      <CustomTabPanel
+        value={value}
+        index={2}
+        onClick={() => {
+          resetIsChecked();
+        }}
+      >
         {allList.map((todo, index) => {
           if (todo.status === "Completed") {
             return (
               <div className="flex">
-                <input type="checkbox" />
-                <p>{todo?.title}</p>
+                <input
+                  onChange={(e) => {
+                    const newList = allList.map((todo) => {
+                      if (todo.id === index + 1) {
+                        todo.isChecked = e.target.checked;
+                      }
+                      return todo;
+                    });
+                    setAllList(newList);
+                  }}
+                  type="checkbox"
+                />
+                <p
+                  className="ml-5"
+                  style={
+                    todo.isChecked ? { textDecoration: "line-through" } : null
+                  }
+                >
+                  {todo?.title}
+                </p>
               </div>
             );
           }
         })}
         <button
+          className="delete-all"
           onClick={() => {
-            const newList = [];
-            allList.forEach((todo, index) => {
-              if (!todo.isChecked && todo.status !== "Completed") {
-                newList.push(todo);
+            let newList = [];
+            for (let i = 0; i < allList.length; i++) {
+              if (allList[i].isChecked && allList[i].status === "Completed") {
+              } else {
+                newList.push(allList[i]);
               }
-            });
+            }
             setAllList(newList);
           }}
         >
