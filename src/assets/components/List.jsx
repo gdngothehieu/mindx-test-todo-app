@@ -6,7 +6,7 @@ function List({ allList, status, checkBox, deleteItem, ...props }) {
       {allList.map((todo, id) => {
         if (todo.status === status || status === "All") {
           return (
-            <div className="flex">
+            <div key={todo.title} className="flex">
               <input
                 onChange={(e) => {
                   checkBox(e, todo.title);
