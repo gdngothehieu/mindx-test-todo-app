@@ -57,7 +57,8 @@ body {font-family: Arial;}
 
 .todo-head{
     font-weight: 500;
-    font-size: 24px;
+    font-size: 36px;
+
 }
 
 .delete-all{
@@ -66,11 +67,12 @@ body {font-family: Arial;}
     padding: 20px;
     background-color: red;
     color: white;
-    margin-left: 85%;
+    margin-left: 100%;
 
 }
 
 .complete-task{
+    margin-top: 19px;
     background-color: rgb(83, 83, 156);
     padding-left: 24px;
     padding-right: 24px;
@@ -85,7 +87,7 @@ body {font-family: Arial;}
     width: 24px;
     height: 24px;
     cursor: pointer;
-    margin-left: 80%;
+    margin-left: 100%;
 }
 
 .delete-all{

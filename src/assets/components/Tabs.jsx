@@ -5,6 +5,10 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import "./Tabs.css";
 import List from "./List";
+import { Alert } from "@mui/material";
+import NestedModal from "./DeleteModal";
+import DeleteAllModal from "./DeleteAllModal";
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
@@ -83,22 +87,62 @@ export default function BasicTabs() {
   //   localStorage?.setItem(data)
   const [value, setValue] = React.useState(0);
 
-  const [allList, setAllList] = React.useState(savedList.length ?  savedList : data);
+  const [allList, setAllList] = React.useState(
+    savedList?.length ? savedList : []
+  );
   const [keyword, setKeyword] = React.useState("");
+  const [show, setShow] = React.useState(false);
+  const [showDeleteAll, setShowDeleteAll] = React.useState(false);
+  const [showCompleteTask, setShowCompleteTask] = React.useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] = React.useState(false);
 
   React.useEffect(() => {
-    localStorage.setItem("allList", JSON?.stringify(allList));
+    const timeId = setTimeout(() => {
+      // After 3 seconds set the show value to false
+      setShowDeleteAll(false);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [showDeleteAll]);
+  
+  React.useEffect(() => {
+    const timeId = setTimeout(() => {
+      setShow(false);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [show]);
+
+  React.useEffect(() => {
+    if (allList.length) {
+      localStorage.setItem("allList", JSON?.stringify(allList));
+    }
   }, [allList]);
 
   const addTask = (e) => {
     if (!keyword) {
       return;
     }
+    const existTask = allList.filter((todo) => todo.title === keyword);
+
+    if (existTask.length) {
+      setShow(true);
+      const setShowFalse = () => {
+        setShow(false);
+      };
+      setTimeout(set);
+
+      return;
+    }
     setAllList((prev) => {
       return [
         ...prev,
         {
-          id: allList?.length + 1,
+          id: prev?.length + 1,
           title: keyword,
           status: "Active",
           isChecked: false,
@@ -106,7 +150,7 @@ export default function BasicTabs() {
       ];
     });
 
-    reload();
+    // reload();
   };
 
   const handleChange = (event, newValue) => {
@@ -114,6 +158,7 @@ export default function BasicTabs() {
   };
   const reload = () => {
     window.location.reload();
+
     resetIsChecked();
   };
   const resetIsChecked = () => {
@@ -135,8 +180,8 @@ export default function BasicTabs() {
   const deleteAll = (title) => {
     const newList = [];
     setAllList(newList);
-    reload();
-    localStorage.setItem("allList", JSON.stringify(newList));
+    // reload();
+    localStorage.setItem("allList", JSON.stringify([]));
   };
 
   const checkBox = (e, title) => {
@@ -168,8 +213,20 @@ export default function BasicTabs() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <div className="text-center todo-head">#Todo</div>
-
+      <div className="text-center todo-head">
+        <h3>#Todo</h3>
+      </div>
+      {showDeleteAll ? (
+        <Alert severity="success">Successfully Delete all items</Alert>
+      ) : null}
+      {showCompleteTask ? (
+        <Alert severity="success">Successfully Complete Task</Alert>
+      ) : null}
+      {show ? (
+        <Alert severity="error">
+          You already have this task. Please kindly input a new task.
+        </Alert>
+      ) : null}
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
@@ -251,12 +308,16 @@ export default function BasicTabs() {
         <button
           className="delete-all"
           onClick={() => {
-            deleteAll();
+            setShowDeleteAllModal(true);
           }}
         >
           Delete All
         </button>
+
       </CustomTabPanel>
+      <DeleteAllModal showDeleteAll={showDeleteAll} setShowDeleteAll={setShowDeleteAll} showDeleteAllModal={showDeleteAllModal} setShowDeleteAllModal={setShowDeleteAllModal} deleteAll={deleteAll} />
+
+      <NestedModal />
     </Box>
   );
 }
