@@ -32,76 +32,89 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
+const data = [
+  {
+    id: 1,
+    title: "Become President",
+    status: "Active",
+    isChecked: false,
+  },
+  {
+    id: 2,
 
+    title: "Become Developer",
+    status: "Active",
+    isChecked: false,
+  },
+
+  {
+    id: 3,
+
+    title: "Become a Billionaire",
+    status: "Completed",
+    isChecked: false,
+  },
+  {
+    id: 4,
+
+    title: "Become a hyper active person",
+    status: "Completed",
+    isChecked: false,
+  },
+
+  {
+    id: 5,
+
+    title: "Become a patient person",
+    status: "Completed",
+    isChecked: false,
+  },
+
+  {
+    id: 6,
+
+    title: "Become a  person",
+    status: "Completed",
+    isChecked: false,
+  },
+];
 export default function BasicTabs() {
+  const savedList = JSON?.parse(localStorage?.getItem("allList"));
+  //   localStorage?.setItem(data)
   const [value, setValue] = React.useState(0);
 
-  const [allList, setAllList] = React.useState([
-    {
-      id: 1,
-      title: "Become President",
-      status: "Active",
-      isChecked: false,
-    },
-    {
-      id: 2,
-
-      title: "Become Developer",
-      status: "Active",
-      isChecked: false,
-    },
-
-    {
-      id: 3,
-
-      title: "Become a Billionaire",
-      status: "Completed",
-      isChecked: false,
-    },
-    {
-      id: 4,
-
-      title: "Become a hyper active person",
-      status: "Completed",
-      isChecked: false,
-    },
-
-    {
-      id: 5,
-
-      title: "Become a patient person",
-      status: "Completed",
-      isChecked: false,
-    },
-
-    {
-      id: 6,
-
-      title: "Become a  person",
-      status: "Completed",
-      isChecked: false,
-    },
-  ]);
+  const [allList, setAllList] = React.useState(savedList.length ?  savedList : data);
   const [keyword, setKeyword] = React.useState("");
+
   React.useEffect(() => {
-    localStorage.setItem("allList", JSON.stringify(allList));
+    localStorage.setItem("allList", JSON?.stringify(allList));
   }, [allList]);
-  const addTask = () => {
+
+  const addTask = (e) => {
     if (!keyword) {
       return;
     }
-    setAllList([
-      ...allList,
-      {
-        id: allList.length + 1,
-        title: keyword,
-        status: "Active",
-        isChecked: false,
-      },
-    ]);
+    setAllList((prev) => {
+      return [
+        ...prev,
+        {
+          id: allList?.length + 1,
+          title: keyword,
+          status: "Active",
+          isChecked: false,
+        },
+      ];
+    });
+
+    reload();
   };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+  const reload = () => {
+    window.location.reload();
+    resetIsChecked();
   };
   const resetIsChecked = () => {
     const newList = allList.map((todo) => {
@@ -111,14 +124,21 @@ export default function BasicTabs() {
     console.log(newList);
     setAllList(newList);
   };
+
   const deleteItem = (title) => {
     const newList = allList.filter((todo) => todo.title !== title);
     setAllList(newList);
+    // window.location.reload();
+    localStorage.setItem("allList", JSON.stringify(newList));
   };
+
   const deleteAll = (title) => {
     const newList = [];
     setAllList(newList);
+    reload();
+    localStorage.setItem("allList", JSON.stringify(newList));
   };
+
   const checkBox = (e, title) => {
     const newList = allList.map((todo) => {
       console.log(todo.title, title);
@@ -130,6 +150,22 @@ export default function BasicTabs() {
     console.log(newList);
     setAllList(newList);
   };
+
+  const completeTask = () => {
+    const newList = allList.map((todo, index) => {
+      console.log(todo.id, index);
+      if (todo.isChecked) {
+        console.log(todo.isChecked);
+        todo.status = "Completed";
+      }
+      return todo;
+    });
+    reload();
+
+    console.log(newList);
+    setAllList(newList);
+  };
+
   return (
     <Box sx={{ width: "100%" }}>
       <div className="text-center todo-head">#Todo</div>
@@ -150,7 +186,7 @@ export default function BasicTabs() {
       </Box>
 
       <CustomTabPanel value={value} index={0}>
-        <div className="flex ">
+        <div className="flex">
           <input
             className="add-details-input"
             onChange={(e) => {
@@ -158,7 +194,7 @@ export default function BasicTabs() {
             }}
             placeholder="add details"
           />
-          <button className="add-button" onClick={() => addTask()}>
+          <button className="add-button" onClick={(e) => addTask(e)}>
             Add
           </button>
         </div>
@@ -174,7 +210,7 @@ export default function BasicTabs() {
       </CustomTabPanel>
 
       <CustomTabPanel value={value} index={1}>
-        <div>
+        <div className="flex">
           <input
             className="add-details-input"
             onChange={(e) => {
@@ -182,7 +218,7 @@ export default function BasicTabs() {
             }}
             placeholder="add details"
           />
-          <button className="add-button" onClick={() => addTask()}>
+          <button className="add-button" onClick={(e) => addTask(e)}>
             Add
           </button>
         </div>
@@ -197,15 +233,7 @@ export default function BasicTabs() {
         <button
           className="complete-task"
           onClick={() => {
-            const newList = allList.map((todo, index) => {
-              console.log(todo.id, index);
-              if (todo.isChecked) {
-                todo.status = "Completed";
-              }
-              return todo;
-            });
-            console.log(newList);
-            setAllList(newList);
+            completeTask();
           }}
         >
           Complete Task
