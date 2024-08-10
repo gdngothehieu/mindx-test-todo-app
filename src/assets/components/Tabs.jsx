@@ -106,7 +106,7 @@ export default function BasicTabs() {
       clearTimeout(timeId);
     };
   }, [showDeleteAll]);
-  
+
   React.useEffect(() => {
     const timeId = setTimeout(() => {
       setShow(false);
@@ -166,7 +166,6 @@ export default function BasicTabs() {
       todo.isChecked = false;
       return todo;
     });
-    console.log(newList);
     setAllList(newList);
   };
 
@@ -186,28 +185,23 @@ export default function BasicTabs() {
 
   const checkBox = (e, title) => {
     const newList = allList.map((todo) => {
-      console.log(todo.title, title);
       if (todo.title === title) {
         todo.isChecked = e.target.checked;
       }
       return todo;
     });
-    console.log(newList);
     setAllList(newList);
   };
 
   const completeTask = () => {
     const newList = allList.map((todo, index) => {
-      console.log(todo.id, index);
       if (todo.isChecked) {
-        console.log(todo.isChecked);
         todo.status = "Completed";
       }
       return todo;
     });
-    reload();
+    // reload();
 
-    console.log(newList);
     setAllList(newList);
   };
 
@@ -234,9 +228,20 @@ export default function BasicTabs() {
           onClick={() => {
             resetIsChecked();
           }}
+          TabIndicatorProps={{
+            style: {
+              height:"5px",
+              width: "10%",
+            marginLeft: "12%"
+            }
+          }}   
           aria-label="basic tabs example"
         >
-          <Tab style={{ width: "33%" }} label="All" {...a11yProps(0)} />
+          <Tab
+            style={{ width: "33%" }}
+                     label="All"
+            {...a11yProps(0)}
+          />
           <Tab style={{ width: "33%" }} label="Active" {...a11yProps(1)} />
           <Tab style={{ width: "33%" }} label="Completed" {...a11yProps(2)} />
         </Tabs>
@@ -313,9 +318,14 @@ export default function BasicTabs() {
         >
           Delete All
         </button>
-
       </CustomTabPanel>
-      <DeleteAllModal showDeleteAll={showDeleteAll} setShowDeleteAll={setShowDeleteAll} showDeleteAllModal={showDeleteAllModal} setShowDeleteAllModal={setShowDeleteAllModal} deleteAll={deleteAll} />
+      <DeleteAllModal
+        showDeleteAll={showDeleteAll}
+        setShowDeleteAll={setShowDeleteAll}
+        showDeleteAllModal={showDeleteAllModal}
+        setShowDeleteAllModal={setShowDeleteAllModal}
+        deleteAll={deleteAll}
+      />
 
       <NestedModal />
     </Box>
