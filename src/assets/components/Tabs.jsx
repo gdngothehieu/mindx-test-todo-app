@@ -65,32 +65,27 @@ export default function BasicTabs() {
       status: "Completed",
       isChecked: false,
     },
-    
+
     {
-        id: 5,
-  
-        title: "Become a patient person",
-        status: "Completed",
-        isChecked: false,
-      },
-      
+      id: 5,
+
+      title: "Become a patient person",
+      status: "Completed",
+      isChecked: false,
+    },
+
     {
-        id: 6,
-  
-        title: "Become a  person",
-        status: "Completed",
-        isChecked: false,
-      },
+      id: 6,
+
+      title: "Become a  person",
+      status: "Completed",
+      isChecked: false,
+    },
   ]);
   const [keyword, setKeyword] = React.useState("");
-  useEffect(() => {
-    first
-  
-    return () => {
-      second
-    }
-  }, [third])
-  
+  React.useEffect(() => {
+    localStorage.setItem("allList", JSON.stringify(allList));
+  }, [allList]);
   const addTask = () => {
     if (!keyword) {
       return;
@@ -169,6 +164,7 @@ export default function BasicTabs() {
         </div>
         <div className=" ">
           <List
+            setAllList={setAllList}
             deleteItem={deleteItem}
             checkBox={checkBox}
             allList={allList}
@@ -191,6 +187,7 @@ export default function BasicTabs() {
           </button>
         </div>
         <List
+          setAllList={setAllList}
           deleteItem={deleteItem}
           checkBox={checkBox}
           allList={allList}
@@ -216,6 +213,7 @@ export default function BasicTabs() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <List
+          setAllList={setAllList}
           deleteItem={deleteItem}
           checkBox={checkBox}
           allList={allList}
@@ -227,7 +225,6 @@ export default function BasicTabs() {
           onClick={() => {
             deleteAll();
           }}
-          
         >
           Delete All
         </button>
