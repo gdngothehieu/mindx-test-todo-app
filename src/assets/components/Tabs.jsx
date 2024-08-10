@@ -61,12 +61,36 @@ export default function BasicTabs() {
     {
       id: 4,
 
-      title: "Become a good person",
+      title: "Become a hyper active person",
       status: "Completed",
       isChecked: false,
     },
+    
+    {
+        id: 5,
+  
+        title: "Become a patient person",
+        status: "Completed",
+        isChecked: false,
+      },
+      
+    {
+        id: 6,
+  
+        title: "Become a  person",
+        status: "Completed",
+        isChecked: false,
+      },
   ]);
   const [keyword, setKeyword] = React.useState("");
+  useEffect(() => {
+    first
+  
+    return () => {
+      second
+    }
+  }, [third])
+  
   const addTask = () => {
     if (!keyword) {
       return;
